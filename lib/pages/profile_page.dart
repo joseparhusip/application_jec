@@ -1,4 +1,4 @@
-// profile_page.dart - DENGAN PERBAIKAN SCROLL & SKELETON LOADING
+// profile_page.dart - DENGAN PERBAIKAN SCROLL & SKELETON LOADING (FIXED)
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -55,8 +55,6 @@ class _ProfilPageState extends State<ProfilPage> with SingleTickerProviderStateM
     super.dispose();
   }
   
-  // ... (Fungsi _showLanguageDialog, _buildLanguageOption, dan _logout tetap sama) ...
-  
   // --- FUNGSI LOGOUT DENGAN ANIMASI ---
   void _logout(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
@@ -79,7 +77,7 @@ class _ProfilPageState extends State<ProfilPage> with SingleTickerProviderStateM
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: Colors.black.withValues(alpha: 0.1),
                   blurRadius: 20,
                   offset: const Offset(0, 10),
                 ),
@@ -92,7 +90,7 @@ class _ProfilPageState extends State<ProfilPage> with SingleTickerProviderStateM
                   width: 60,
                   height: 60,
                   decoration: BoxDecoration(
-                    color: Colors.red.withOpacity(0.1),
+                    color: Colors.red.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(
@@ -203,7 +201,7 @@ class _ProfilPageState extends State<ProfilPage> with SingleTickerProviderStateM
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: Colors.black.withValues(alpha: 0.1),
                   blurRadius: 20,
                   offset: const Offset(0, 10),
                 ),
@@ -216,7 +214,7 @@ class _ProfilPageState extends State<ProfilPage> with SingleTickerProviderStateM
                   width: 60,
                   height: 60,
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                    color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
@@ -336,13 +334,13 @@ class _ProfilPageState extends State<ProfilPage> with SingleTickerProviderStateM
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: isSelected 
-            ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
+            ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.1)
             : Colors.transparent,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isSelected 
               ? Theme.of(context).colorScheme.primary
-              : Theme.of(context).colorScheme.outline.withOpacity(0.2),
+              : Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
           ),
         ),
         child: Row(
@@ -388,14 +386,13 @@ class _ProfilPageState extends State<ProfilPage> with SingleTickerProviderStateM
             end: Alignment.bottomRight,
             colors: [
               colorScheme.primary,
-              colorScheme.primary.withOpacity(0.8),
+              colorScheme.primary.withValues(alpha: 0.8),
               colorScheme.primaryContainer,
             ],
             stops: const [0.0, 0.6, 1.0],
           ),
         ),
         child: SafeArea(
-          // --- PERUBAHAN UTAMA: Menggunakan Column untuk memisahkan header dan konten scrollable ---
           child: Column(
             children: [
               // --- HEADER (TIDAK BISA DI-SCROLL) ---
@@ -417,40 +414,34 @@ class _ProfilPageState extends State<ProfilPage> with SingleTickerProviderStateM
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
+                            color: Colors.black.withValues(alpha: 0.1),
                             blurRadius: 20,
                             offset: const Offset(0, -5),
                           ),
                         ],
                       ),
-                      child: ClipRRect( // Menambahkan ClipRRect agar konten tidak keluar dari border radius
+                      child: ClipRRect(
                         borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(30),
                           topRight: Radius.circular(30),
                         ),
-                        // --- PERUBAHAN: Bungkus konten dengan Skeletonizer dan SingleChildScrollView ---
-                        child: SkeletonizerConfig( // --- PENAMBAHAN: Konfigurasi untuk efek skeleton yang lebih baik
-                          effect: ShimmerEffect(
-                            baseColor: Colors.grey[300]!,
-                            highlightColor: Colors.grey[100]!,
-                          ),
-                          child: Skeletonizer(
-                            enabled: _isLoading,
-                            child: SingleChildScrollView(
-                              physics: const BouncingScrollPhysics(),
-                              child: Padding(
-                                padding: const EdgeInsets.all(25.0),
-                                child: Column(
-                                  children: [
-                                    _buildProfileCard(colorScheme, size, localizations),
-                                    const SizedBox(height: 25),
-                                    _buildStatusCard(colorScheme, localizations),
-                                    const SizedBox(height: 35),
-                                    _buildMenuItems(colorScheme, localizations),
-                                    const SizedBox(height: 30),
-                                    _buildFooter(colorScheme, localizations),
-                                  ],
-                                ),
+                        // --- PERBAIKAN: Menggunakan Skeletonizer tanpa SkeletonizerConfig ---
+                        child: Skeletonizer(
+                          enabled: _isLoading,
+                          child: SingleChildScrollView(
+                            physics: const BouncingScrollPhysics(),
+                            child: Padding(
+                              padding: const EdgeInsets.all(25.0),
+                              child: Column(
+                                children: [
+                                  _buildProfileCard(colorScheme, size, localizations),
+                                  const SizedBox(height: 25),
+                                  _buildStatusCard(colorScheme, localizations),
+                                  const SizedBox(height: 35),
+                                  _buildMenuItems(colorScheme, localizations),
+                                  const SizedBox(height: 30),
+                                  _buildFooter(colorScheme, localizations),
+                                ],
                               ),
                             ),
                           ),
@@ -467,10 +458,9 @@ class _ProfilPageState extends State<ProfilPage> with SingleTickerProviderStateM
     );
   }
 
-  // ... (Sisa widget _buildHeader, _buildProfileCard, dll tetap sama) ...
   Widget _buildHeader(ColorScheme colorScheme, AppLocalizations localizations) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(25.0, 25.0, 25.0, 0), // Mengurangi padding bawah
+      padding: const EdgeInsets.fromLTRB(25.0, 25.0, 25.0, 0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -482,9 +472,9 @@ class _ProfilPageState extends State<ProfilPage> with SingleTickerProviderStateM
               color: colorScheme.onPrimary,
             ),
           ),
-          Consumer<LanguageProvider>( // <--- GANTI DARI STATIC KE CONSUMER
+          Consumer<LanguageProvider>(
             builder: (context, languageProvider, child) {
-              return InkWell( // <--- TAMBAH ONTTAP
+              return InkWell(
                 onTap: () {
                   HapticFeedback.lightImpact();
                   _showLanguageDialog(context);
@@ -493,10 +483,10 @@ class _ProfilPageState extends State<ProfilPage> with SingleTickerProviderStateM
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
                   decoration: BoxDecoration(
-                    color: colorScheme.surface.withOpacity(0.2),
+                    color: colorScheme.surface.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color: colorScheme.onPrimary.withOpacity(0.2),
+                      color: colorScheme.onPrimary.withValues(alpha: 0.2),
                     ),
                   ),
                   child: Row(
@@ -546,17 +536,17 @@ class _ProfilPageState extends State<ProfilPage> with SingleTickerProviderStateM
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              colorScheme.primaryContainer.withOpacity(0.8),
+              colorScheme.primaryContainer.withValues(alpha: 0.8),
               colorScheme.primaryContainer,
             ],
           ),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: colorScheme.outline.withOpacity(0.1),
+            color: colorScheme.outline.withValues(alpha: 0.1),
           ),
           boxShadow: [
             BoxShadow(
-              color: colorScheme.primary.withOpacity(0.1),
+              color: colorScheme.primary.withValues(alpha: 0.1),
               blurRadius: 15,
               offset: const Offset(0, 5),
             ),
@@ -564,7 +554,7 @@ class _ProfilPageState extends State<ProfilPage> with SingleTickerProviderStateM
         ),
         child: Row(
           children: [
-            const Skeleton.leaf( // Memberikan bentuk pada skeleton
+            Skeleton.leaf(
               child: CircleAvatar(
                 radius: 30,
                 child: Icon(Icons.person),
@@ -590,7 +580,7 @@ class _ProfilPageState extends State<ProfilPage> with SingleTickerProviderStateM
                       Icon(
                         Icons.calendar_today_rounded,
                         size: 12,
-                        color: colorScheme.onPrimaryContainer.withOpacity(0.7),
+                        color: colorScheme.onPrimaryContainer.withValues(alpha: 0.7),
                       ),
                       const SizedBox(width: 4),
                       Flexible(
@@ -598,7 +588,7 @@ class _ProfilPageState extends State<ProfilPage> with SingleTickerProviderStateM
                           localizations.joinedDate,
                           style: TextStyle(
                             fontSize: 12,
-                            color: colorScheme.onPrimaryContainer.withOpacity(0.8),
+                            color: colorScheme.onPrimaryContainer.withValues(alpha: 0.8),
                             fontWeight: FontWeight.w500,
                           ),
                           overflow: TextOverflow.ellipsis,
@@ -612,7 +602,7 @@ class _ProfilPageState extends State<ProfilPage> with SingleTickerProviderStateM
             const SizedBox(width: 8),
             Icon(
               Icons.arrow_forward_ios_rounded,
-              color: colorScheme.onPrimaryContainer.withOpacity(0.5),
+              color: colorScheme.onPrimaryContainer.withValues(alpha: 0.5),
               size: 16,
             ),
           ],
@@ -630,17 +620,17 @@ class _ProfilPageState extends State<ProfilPage> with SingleTickerProviderStateM
           end: Alignment.bottomRight,
           colors: [
             colorScheme.secondaryContainer,
-            colorScheme.secondaryContainer.withOpacity(0.8),
+            colorScheme.secondaryContainer.withValues(alpha: 0.8),
           ],
         ),
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
-          color: colorScheme.outline.withOpacity(0.1),
+          color: colorScheme.outline.withValues(alpha: 0.1),
         ),
       ),
       child: Row(
         children: [
-          const Skeleton.leaf( // Memberikan bentuk pada skeleton
+          Skeleton.leaf(
             child: SizedBox(
               width: 42,
               height: 42,
@@ -656,7 +646,7 @@ class _ProfilPageState extends State<ProfilPage> with SingleTickerProviderStateM
                   localizations.memberStatus,
                   style: TextStyle(
                     fontSize: 11,
-                    color: colorScheme.onSecondaryContainer.withOpacity(0.7),
+                    color: colorScheme.onSecondaryContainer.withValues(alpha: 0.7),
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -671,7 +661,7 @@ class _ProfilPageState extends State<ProfilPage> with SingleTickerProviderStateM
               ],
             ),
           ),
-          Skeleton.leaf( // Memberikan bentuk pada skeleton
+          Skeleton.leaf(
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
@@ -681,7 +671,7 @@ class _ProfilPageState extends State<ProfilPage> with SingleTickerProviderStateM
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.orange.withOpacity(0.3),
+                    color: Colors.orange.withValues(alpha: 0.3),
                     blurRadius: 6,
                     offset: const Offset(0, 2),
                   ),
@@ -770,11 +760,11 @@ class _ProfilPageState extends State<ProfilPage> with SingleTickerProviderStateM
                   color: colorScheme.surface,
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: colorScheme.outline.withOpacity(0.1),
+                    color: colorScheme.outline.withValues(alpha: 0.1),
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
+                      color: Colors.black.withValues(alpha: 0.05),
                       blurRadius: 10,
                       offset: const Offset(0, 2),
                     ),
@@ -782,11 +772,11 @@ class _ProfilPageState extends State<ProfilPage> with SingleTickerProviderStateM
                 ),
                 child: Row(
                   children: [
-                    Skeleton.leaf( // Memberikan bentuk pada skeleton
+                    Skeleton.leaf(
                       child: Container(
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: (item['color'] as Color).withOpacity(0.1),
+                          color: (item['color'] as Color).withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Icon(
@@ -822,7 +812,7 @@ class _ProfilPageState extends State<ProfilPage> with SingleTickerProviderStateM
                     ),
                     Icon(
                       Icons.arrow_forward_ios_rounded,
-                      color: colorScheme.onSurfaceVariant.withOpacity(0.5),
+                      color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
                       size: 16,
                     ),
                   ],
@@ -851,7 +841,6 @@ class _ProfilPageState extends State<ProfilPage> with SingleTickerProviderStateM
                 color: colorScheme.primary,
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                // decoration: TextDecoration.underline, // Dihilangkan untuk skeleton
               ),
             ),
           ),
@@ -860,7 +849,7 @@ class _ProfilPageState extends State<ProfilPage> with SingleTickerProviderStateM
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           decoration: BoxDecoration(
-            color: colorScheme.surfaceContainerHighest.withOpacity(0.5),
+            color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
             borderRadius: BorderRadius.circular(20),
           ),
           child: Text(
